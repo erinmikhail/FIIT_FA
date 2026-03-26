@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using TreeDataStructures.Interfaces;
+using TreeDataStructures.Implementations.AVL;
 
 namespace TreeDataStructures.Core;
 

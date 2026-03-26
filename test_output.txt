@@ -1,0 +1,90 @@
+Build started 03/26/2026 19:09:32.
+     1>Project "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/TreeDataStructures.Tests.csproj" on node 1 (Restore target(s)).
+     1>_GetAllRestoreProjectPathItems:
+         Determining projects to restore...
+     1>Project "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/TreeDataStructures.Tests.csproj" (1) is building "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/TreeDataStructures.csproj" (2:4) on node 1 (_GenerateProjectRestoreGraph target(s)).
+     2>AddPrunePackageReferences:
+         Loading prune package data from PrunePackageData folder
+         Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+         Looking for targeting packs in /usr/lib/dotnet/packs/Microsoft.NETCore.App.Ref
+         Pack directories found: /usr/lib/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.4
+         Found package overrides file /usr/lib/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.4/data/PackageOverrides.txt
+     2>Done Building Project "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/TreeDataStructures.csproj" (_GenerateProjectRestoreGraph target(s)).
+     1>Restore:
+         X.509 certificate chain validation will use the fallback certificate bundle at '/usr/lib/dotnet/sdk/10.0.104/trustedroots/codesignctl.pem'.
+         X.509 certificate chain validation will use the fallback certificate bundle at '/usr/lib/dotnet/sdk/10.0.104/trustedroots/timestampctl.pem'.
+         Assets file has not changed. Skipping assets file writing. Path: /mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/obj/project.assets.json
+         Restored /mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/TreeDataStructures.csproj (in 149 ms).
+         Assets file has not changed. Skipping assets file writing. Path: /mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/obj/project.assets.json
+         Restored /mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/TreeDataStructures.Tests.csproj (in 155 ms).
+         
+         NuGet Config files used:
+             /home/mikhail/.nuget/NuGet/NuGet.Config
+         
+         Feeds used:
+             https://api.nuget.org/v3/index.json
+             /usr/lib/dotnet/library-packs
+         All projects are up-to-date for restore.
+     1>Done Building Project "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/TreeDataStructures.Tests.csproj" (Restore target(s)).
+   1:7>Project "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/TreeDataStructures.Tests.csproj" on node 1 (VSTest target(s)).
+     1>BuildProject:
+         Build started, please wait...
+   1:7>Project "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/TreeDataStructures.Tests.csproj" (1:7) is building "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/TreeDataStructures.Tests.csproj" (1:8) on node 1 (default targets).
+   1:8>Project "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/TreeDataStructures.Tests.csproj" (1:8) is building "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/TreeDataStructures.csproj" (2:6) on node 1 (default targets).
+     2>GenerateTargetFrameworkMonikerAttribute:
+       Skipping target "GenerateTargetFrameworkMonikerAttribute" because all output files are up-to-date with respect to the input files.
+       CoreGenerateAssemblyInfo:
+       Skipping target "CoreGenerateAssemblyInfo" because all output files are up-to-date with respect to the input files.
+       _GenerateSourceLinkFile:
+         Source Link file 'obj/Debug/net10.0/TreeDataStructures.sourcelink.json' is up-to-date.
+       CoreCompile:
+       Skipping target "CoreCompile" because all output files are up-to-date with respect to the input files.
+       _CreateAppHost:
+       Skipping target "_CreateAppHost" because all output files are up-to-date with respect to the input files.
+       _CopyOutOfDateSourceItemsToOutputDirectory:
+         Copying file from "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/obj/Debug/net10.0/apphost" to "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/bin/Debug/net10.0/TreeDataStructures".
+       GenerateBuildDependencyFile:
+       Skipping target "GenerateBuildDependencyFile" because all output files are up-to-date with respect to the input files.
+       GenerateBuildRuntimeConfigurationFiles:
+       Skipping target "GenerateBuildRuntimeConfigurationFiles" because all output files are up-to-date with respect to the input files.
+       CopyFilesToOutputDirectory:
+         Copying file from "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/obj/Debug/net10.0/TreeDataStructures.dll" to "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/bin/Debug/net10.0/TreeDataStructures.dll".
+         TreeDataStructures -> /mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/bin/Debug/net10.0/TreeDataStructures.dll
+         Copying file from "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/obj/Debug/net10.0/TreeDataStructures.pdb" to "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/bin/Debug/net10.0/TreeDataStructures.pdb".
+     2>Done Building Project "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/TreeDataStructures.csproj" (default targets).
+     1>GenerateTargetFrameworkMonikerAttribute:
+       Skipping target "GenerateTargetFrameworkMonikerAttribute" because all output files are up-to-date with respect to the input files.
+       CoreGenerateAssemblyInfo:
+       Skipping target "CoreGenerateAssemblyInfo" because all output files are up-to-date with respect to the input files.
+       _GenerateSourceLinkFile:
+         Source Link file 'obj/Debug/net10.0/TreeDataStructures.Tests.sourcelink.json' is up-to-date.
+       CoreCompile:
+       Skipping target "CoreCompile" because all output files are up-to-date with respect to the input files.
+       _CopyOutOfDateSourceItemsToOutputDirectory:
+       Building target "_CopyOutOfDateSourceItemsToOutputDirectory" partially, because some output files are out of date with respect to their input files.
+         Copying file from "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/obj/Debug/net10.0/apphost" to "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/bin/Debug/net10.0/TreeDataStructures".
+         Copying file from "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/bin/Debug/net10.0/TreeDataStructures.runtimeconfig.json" to "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/bin/Debug/net10.0/TreeDataStructures.runtimeconfig.json".
+         Copying file from "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures/bin/Debug/net10.0/TreeDataStructures.deps.json" to "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/bin/Debug/net10.0/TreeDataStructures.deps.json".
+       GenerateBuildDependencyFile:
+       Skipping target "GenerateBuildDependencyFile" because all output files are up-to-date with respect to the input files.
+       GenerateBuildRuntimeConfigurationFiles:
+       Skipping target "GenerateBuildRuntimeConfigurationFiles" because all output files are up-to-date with respect to the input files.
+       CopyFilesToOutputDirectory:
+         Copying file from "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/obj/Debug/net10.0/TreeDataStructures.Tests.dll" to "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/bin/Debug/net10.0/TreeDataStructures.Tests.dll".
+         TreeDataStructures.Tests -> /mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/bin/Debug/net10.0/TreeDataStructures.Tests.dll
+         Copying file from "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/obj/Debug/net10.0/TreeDataStructures.Tests.pdb" to "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/bin/Debug/net10.0/TreeDataStructures.Tests.pdb".
+     1>Done Building Project "/mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/TreeDataStructures.Tests.csproj" (default targets).
+     1>BuildProject:
+         Build completed.
+         
+Test run for /mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/bin/Debug/net10.0/TreeDataStructures.Tests.dll (.NETCoreApp,Version=v10.0)
+VSTest version 18.0.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+NUnit Adapter 5.0.0.0: Test execution started
+Running all tests in /mnt/c/Users/Миша/Desktop/FIIT_FA/FIIT_FA/TreeDataStructures.Tests/bin/Debug/net10.0/TreeDataStructures.Tests.dll
+   NUnit3TestExecutor discovered 47 of 47 NUnit test cases using Current Discovery mode, Non-Explicit run
+  Passed Test_Clear [15 ms]
+  Passed Test_Indexer_Throws_OnMissingKey [7 ms]
+  Passed Test_InsertAndCount [2 ms]

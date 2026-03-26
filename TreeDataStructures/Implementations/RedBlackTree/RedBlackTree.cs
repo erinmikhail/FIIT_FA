@@ -26,7 +26,10 @@ public class RedBlackTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, RbN
                 {
                     node.Parent.Color = RbColor.Black;
                     uncle.Color = RbColor.Black;
-                    node.Parent.Parent.Color = RbColor.Red;
+                    if (node.Parent.Parent != null)
+                    {
+                        node.Parent.Parent.Color = RbColor.Red;
+                    }
                     node = node.Parent.Parent;
                 }
                 else
@@ -39,7 +42,10 @@ public class RedBlackTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, RbN
                     }
 
                     node.Parent.Color = RbColor.Black;
-                    node.Parent.Parent!.Color = RbColor.Red;
+                    if (node.Parent.Parent != null)
+                    {
+                        node.Parent.Parent!.Color = RbColor.Red;
+                    }
                     RotateRight(node.Parent.Parent);
                 }
             }
@@ -63,7 +69,10 @@ public class RedBlackTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, RbN
                     }
 
                     node.Parent.Color = RbColor.Black;
-                    node.Parent.Parent!.Color = RbColor.Red;
+                    if (node.Parent.Parent != null)
+                    { 
+                        node.Parent.Parent!.Color = RbColor.Red;
+                    }
                     RotateLeft(node.Parent.Parent);
                 }
             }
