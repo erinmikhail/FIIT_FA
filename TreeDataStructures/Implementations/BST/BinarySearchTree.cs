@@ -7,7 +7,7 @@ public class BinarySearchTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue,
 {
     protected override BstNode<TKey, TValue> CreateNode(TKey key, TValue value)
     {
-        throw new NotImplementedException();
+        return new BstNode<TKey, TValue>(key, value);
     }
     
     protected override void OnNodeAdded(BstNode<TKey, TValue> newNode)
