@@ -1,4 +1,5 @@
-﻿using TreeDataStructures.Core;
+﻿using System;
+using TreeDataStructures.Core;
 
 namespace TreeDataStructures.Implementations.AVL;
 
@@ -7,77 +8,13 @@ public class AvlTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, AvlNode<
 {
     protected override AvlNode<TKey, TValue> CreateNode(TKey key, TValue value)
         => new(key, value);
-    
+
     protected override void OnNodeAdded(AvlNode<TKey, TValue> newNode)
     {
         AvlNode<TKey, TValue>? current = newNode;
-        
         while (current != null)
         {
-            // Обновление высоты узла
-            int leftHeight = current.Left?.Height ?? 0;
-            int rightHeight = current.Right?.Height ?? 0;
-            current.Height = 1 + Math.Max(leftHeight, rightHeight);
-
-            int balance = leftHeight - rightHeight;
-
-            if (balance > 1)
-            {
-                int leftBalance = (current.Left?.Left?.Height ?? 0) - (current.Left?.Right?.Height ?? 0);
-                if (leftBalance < 0)
-                {
-                    RotateLeft(current.Left!);
-                }
-                RotateRight(current);
-
-                if (current.Parent?.Left != null)
-                {
-                    leftHeight = current.Parent.Left.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Left.Right?.Height ?? 0;
-                    current.Parent.Left.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-                if (current.Parent?.Right != null)
-                {
-                    leftHeight = current.Parent.Right.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Right.Right?.Height ?? 0;
-                    current.Parent.Right.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-                if (current.Parent != null)
-                {
-                    leftHeight = current.Parent.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Right?.Height ?? 0;
-                    current.Parent.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-            }
-            else if (balance < -1)
-            {
-                int rightBalance = (current.Right?.Left?.Height ?? 0) - (current.Right?.Right?.Height ?? 0);
-                if (rightBalance > 0)
-                {
-                    RotateRight(current.Right!);
-                }
-                RotateLeft(current);
-
-                if (current.Parent?.Left != null)
-                {
-                    leftHeight = current.Parent.Left.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Left.Right?.Height ?? 0;
-                    current.Parent.Left.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-                if (current.Parent?.Right != null)
-                {
-                    leftHeight = current.Parent.Right.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Right.Right?.Height ?? 0;
-                    current.Parent.Right.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-                if (current.Parent != null)
-                {
-                    leftHeight = current.Parent.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Right?.Height ?? 0;
-                    current.Parent.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-            }
-            
+            current = Balance(current);
             current = current.Parent;
         }
     }
@@ -85,73 +22,59 @@ public class AvlTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, AvlNode<
     protected override void OnNodeRemoved(AvlNode<TKey, TValue>? parent, AvlNode<TKey, TValue>? child)
     {
         AvlNode<TKey, TValue>? current = parent;
-        
         while (current != null)
         {
-            int leftHeight = current.Left?.Height ?? 0;
-            int rightHeight = current.Right?.Height ?? 0;
-            current.Height = 1 + Math.Max(leftHeight, rightHeight);
-
-            int balance = leftHeight - rightHeight;
-
-            if (balance > 1)
-            {
-                int leftBalance = (current.Left?.Left?.Height ?? 0) - (current.Left?.Right?.Height ?? 0);
-                if (leftBalance < 0)
-                {
-                    RotateLeft(current.Left!);
-                }
-                RotateRight(current);
-
-                if (current.Parent?.Left != null)
-                {
-                    leftHeight = current.Parent.Left.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Left.Right?.Height ?? 0;
-                    current.Parent.Left.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-                if (current.Parent?.Right != null)
-                {
-                    leftHeight = current.Parent.Right.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Right.Right?.Height ?? 0;
-                    current.Parent.Right.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-                if (current.Parent != null)
-                {
-                    leftHeight = current.Parent.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Right?.Height ?? 0;
-                    current.Parent.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-            }
-            else if (balance < -1)
-            {
-                int rightBalance = (current.Right?.Left?.Height ?? 0) - (current.Right?.Right?.Height ?? 0);
-                if (rightBalance > 0)
-                {
-                    RotateRight(current.Right!);
-                }
-                RotateLeft(current);
-
-                if (current.Parent?.Left != null)
-                {
-                    leftHeight = current.Parent.Left.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Left.Right?.Height ?? 0;
-                    current.Parent.Left.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-                if (current.Parent?.Right != null)
-                {
-                    leftHeight = current.Parent.Right.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Right.Right?.Height ?? 0;
-                    current.Parent.Right.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-                if (current.Parent != null)
-                {
-                    leftHeight = current.Parent.Left?.Height ?? 0;
-                    rightHeight = current.Parent.Right?.Height ?? 0;
-                    current.Parent.Height = 1 + Math.Max(leftHeight, rightHeight);
-                }
-            }
-            
+            current = Balance(current);
             current = current.Parent;
         }
+    }
+
+    private int GetHeight(AvlNode<TKey, TValue>? node) => node?.Height ?? 0;
+
+    private int GetBalance(AvlNode<TKey, TValue>? node) 
+        => node == null ? 0 : GetHeight(node.Left) - GetHeight(node.Right);
+
+    private void UpdateHeight(AvlNode<TKey, TValue> node)
+    {
+        node.Height = 1 + Math.Max(GetHeight(node.Left), GetHeight(node.Right));
+    }
+
+    private AvlNode<TKey, TValue> Balance(AvlNode<TKey, TValue> node)
+    {
+        UpdateHeight(node);
+        int balance = GetBalance(node);
+
+        if (balance > 1)
+        {
+            if (GetBalance(node.Left) < 0)
+            {
+                var left = node.Left!;
+                RotateLeft(left);
+                UpdateHeight(left);
+                UpdateHeight(left.Parent!);
+            }
+            RotateRight(node);
+            UpdateHeight(node);
+            UpdateHeight(node.Parent!);
+            
+            return node.Parent!;
+        }
+        else if (balance < -1)
+        {
+            if (GetBalance(node.Right) > 0)
+            {
+                var right = node.Right!;
+                RotateRight(right);
+                UpdateHeight(right);
+                UpdateHeight(right.Parent!);
+            }
+            RotateLeft(node);
+            UpdateHeight(node);
+            UpdateHeight(node.Parent!);
+            
+            return node.Parent!;
+        }
+
+        return node;
     }
 }
