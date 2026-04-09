@@ -104,15 +104,21 @@ public abstract class BinarySearchTreeBase<TKey, TValue, TNode>(IComparer<TKey>?
     
     protected virtual void RemoveNode(TNode node)
     {
+        TNode physicallyRemovedNode = node;
+        TNode? x = null;
+        TNode? xParent = null;
+
         if (node.Left == null)
         {
+            x = node.Right;
+            xParent = node.Parent;
             Transplant(node, node.Right);
-            OnNodeRemoved(node.Parent, node.Right);
         }
         else if (node.Right == null)
         {
+            x = node.Left;
+            xParent = node.Parent;
             Transplant(node, node.Left);
-            OnNodeRemoved(node.Parent, node.Left);
         }
         else
         {
@@ -121,20 +127,29 @@ public abstract class BinarySearchTreeBase<TKey, TValue, TNode>(IComparer<TKey>?
             {
                 successor = successor.Left;
             }
-            
-            if (successor.Parent != node)
+
+            physicallyRemovedNode = successor;
+            x = successor.Right;
+
+            if (successor.Parent == node)
             {
+                xParent = successor;
+            }
+            else
+            {
+                xParent = successor.Parent;
                 Transplant(successor, successor.Right);
                 successor.Right = node.Right;
-                successor.Right.Parent = successor;
+                if (successor.Right != null) successor.Right.Parent = successor;
             }
-            
+
             Transplant(node, successor);
             successor.Left = node.Left;
-            successor.Left.Parent = successor;
-            
-            OnNodeRemoved(successor.Parent, successor);
+            if (successor.Left != null) successor.Left.Parent = successor;
+
+            OnNodesSwapped(node, successor);
         }
+        OnNodeRemoved(physicallyRemovedNode, x, xParent);
     }
 
     public virtual bool ContainsKey(TKey key) => FindNode(key) != null;
@@ -161,12 +176,14 @@ public abstract class BinarySearchTreeBase<TKey, TValue, TNode>(IComparer<TKey>?
     #region Hooks
     
     protected virtual void OnNodeAdded(TNode newNode) { }
-    protected virtual void OnNodeRemoved(TNode? parent, TNode? child) { }
+    protected virtual void OnNodesSwapped(TNode oldNode, TNode newNode) { }
+    protected virtual void OnNodeRemoved(TNode physicallyRemovedNode, TNode? replacementNode, TNode? replacementParent) { }
+    
     
     #endregion
-    
+
     #region Helpers
-    
+
     protected abstract TNode CreateNode(TKey key, TValue value);
     
     protected TNode? FindNode(TKey key)

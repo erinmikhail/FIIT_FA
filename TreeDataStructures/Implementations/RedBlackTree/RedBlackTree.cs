@@ -70,60 +70,18 @@ public class RedBlackTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, RbN
         Root!.Color = RbColor.Black;
     }
 
-    protected override void RemoveNode(RbNode<TKey, TValue> node)
+    protected override void OnNodeRemoved(RbNode<TKey, TValue> physicallyRemoveNode, RbNode<TKey, TValue>? replacementNode, RbNode<TKey, TValue>? replacementParent)
     {
-        RbNode<TKey, TValue> y = node;
-        RbColor yOriginalColor = y.Color;
-        RbNode<TKey, TValue>? x;
-        RbNode<TKey, TValue>? xParent;
-
-        if (node.Left == null)
+        if (physicallyRemoveNode.Color == RbColor.Black)
         {
-            x = node.Right;
-            xParent = node.Parent;
-            Transplant(node, node.Right);
-        }
-        else if (node.Right == null)
-        {
-            x = node.Left;
-            xParent = node.Parent;
-            Transplant(node, node.Left);
-        }
-        else
-        {
-            y = node.Right;
-            while (y.Left != null)
-            {
-                y = y.Left;
-            }
-
-            yOriginalColor = y.Color;
-            x = y.Right;
-
-            if (y.Parent == node)
-            {
-                xParent = y;
-            }
-            else
-            {
-                xParent = y.Parent;
-                Transplant(y, y.Right);
-                y.Right = node.Right;
-                y.Right.Parent = y;
-            }
-
-            Transplant(node, y);
-            y.Left = node.Left;
-            y.Left.Parent = y;
-            y.Color = node.Color;
-        }
-
-        if (yOriginalColor == RbColor.Black)
-        {
-            FixupRemove(x, xParent);
+            FixupRemove(replacementNode, replacementParent);
         }
     }
-    protected override void OnNodeRemoved(RbNode<TKey, TValue>? parent, RbNode<TKey, TValue>? child) { }
+
+    protected override void OnNodesSwapped(RbNode<TKey, TValue> oldNode, RbNode<TKey, TValue> newNode)
+    {
+        newNode.Color = oldNode.Color;
+    }
 
     private void FixupRemove(RbNode<TKey, TValue>? x, RbNode<TKey, TValue>? xParent)
     {

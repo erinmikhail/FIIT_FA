@@ -9,7 +9,7 @@ public class SplayTree<TKey, TValue> : BinarySearchTree<TKey, TValue>
 {
     protected override BstNode<TKey, TValue> CreateNode(TKey key, TValue value)
         => new(key, value);
-    
+
     private void Splay(BstNode<TKey, TValue>? node)
     {
         if (node == null) return;
@@ -18,7 +18,7 @@ public class SplayTree<TKey, TValue> : BinarySearchTree<TKey, TValue>
         {
             BstNode<TKey, TValue> parent = node.Parent;
             BstNode<TKey, TValue>? grandparent = parent.Parent;
-            
+
             if (grandparent == null)
             {
                 // Zig
@@ -52,7 +52,7 @@ public class SplayTree<TKey, TValue> : BinarySearchTree<TKey, TValue>
                 RotateLeft(grandparent);
             }
         }
-        
+
         Root = node;
     }
 
@@ -60,26 +60,26 @@ public class SplayTree<TKey, TValue> : BinarySearchTree<TKey, TValue>
     {
         Splay(newNode);
     }
-    
-    protected override void OnNodeRemoved(BstNode<TKey, TValue>? parent, BstNode<TKey, TValue>? child)
+
+    protected override void OnNodeRemoved(BstNode<TKey, TValue> physicallyRemoveNode, BstNode<TKey, TValue>? replacementNode, BstNode<TKey, TValue>? replacementParent)
     {
-        if (parent != null)
+        if (replacementParent != null)
         {
-            Splay(parent);
+            Splay(replacementParent);
         }
-        else if (child != null)
+        else if (replacementNode != null)
         {
-            Splay(child);
+            Splay(replacementNode);
         }
     }
-    
+
     public override bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
         var node = FindNode(key);
         if (node != null)
         {
             value = node.Value;
-            Splay(node); 
+            Splay(node);
             return true;
         }
         value = default;
@@ -91,7 +91,7 @@ public class SplayTree<TKey, TValue> : BinarySearchTree<TKey, TValue>
         var node = FindNode(key);
         if (node != null)
         {
-            Splay(node); 
+            Splay(node);
             return true;
         }
         return false;

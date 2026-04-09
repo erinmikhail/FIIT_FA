@@ -9,5 +9,5 @@ public class BinarySearchTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue,
 
     protected override void OnNodeAdded(BstNode<TKey, TValue> newNode) { }
 
-    protected override void OnNodeRemoved(BstNode<TKey, TValue>? parent, BstNode<TKey, TValue>? child) { }
+    protected virtual void OnNodeRemoved(BstNode<TKey, TValue> physicallyRemovedNode, BstNode<TKey, TValue>? replacementNode, BstNode<TKey, TValue>? replacementParent) { }
 }

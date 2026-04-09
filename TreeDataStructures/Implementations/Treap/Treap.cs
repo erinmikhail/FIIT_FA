@@ -100,5 +100,5 @@ public class Treap<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, TreapNode<
     }
 
     protected override void OnNodeAdded(TreapNode<TKey, TValue> newNode) { }
-    protected override void OnNodeRemoved(TreapNode<TKey, TValue>? parent, TreapNode<TKey, TValue>? child) { }
+    protected override void OnNodeRemoved(TreapNode<TKey, TValue> physicallyRemoveNode, TreapNode<TKey, TValue>? replacementNode, TreapNode<TKey, TValue>? replacementParent) { }
 }
