@@ -19,7 +19,7 @@ public class AvlTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, AvlNode<
         }
     }
 
-    protected override void OnNodeRemoved(AvlNode<TKey, TValue> physicallyRemoveNode, AvlNode<TKey, TValue>? replacementNode, AvlNode<TKey, TValue>? replacementParent)
+    protected override void OnNodeRemoved( AvlNode<TKey, TValue> logicallyRemovedNode, AvlNode<TKey, TValue> physicallyRemovedNode, AvlNode<TKey, TValue>? replacementNode, AvlNode<TKey, TValue>? replacementParent)
     {
         AvlNode<TKey, TValue>? current = replacementParent;
         while (current != null)

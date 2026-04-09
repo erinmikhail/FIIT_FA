@@ -146,10 +146,8 @@ public abstract class BinarySearchTreeBase<TKey, TValue, TNode>(IComparer<TKey>?
             Transplant(node, successor);
             successor.Left = node.Left;
             if (successor.Left != null) successor.Left.Parent = successor;
-
-            OnNodesSwapped(node, successor);
         }
-        OnNodeRemoved(physicallyRemovedNode, x, xParent);
+        OnNodeRemoved(node, physicallyRemovedNode, x, xParent);
     }
 
     public virtual bool ContainsKey(TKey key) => FindNode(key) != null;
@@ -177,7 +175,7 @@ public abstract class BinarySearchTreeBase<TKey, TValue, TNode>(IComparer<TKey>?
     
     protected virtual void OnNodeAdded(TNode newNode) { }
     protected virtual void OnNodesSwapped(TNode oldNode, TNode newNode) { }
-    protected virtual void OnNodeRemoved(TNode physicallyRemovedNode, TNode? replacementNode, TNode? replacementParent) { }
+    protected virtual void OnNodeRemoved( TNode logicallyRemovedNode, TNode physicallyRemovedNode, TNode? replacementNode, TNode? replacementParent) { }
     
     
     #endregion

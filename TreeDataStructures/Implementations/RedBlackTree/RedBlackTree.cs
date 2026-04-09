@@ -70,17 +70,18 @@ public class RedBlackTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, RbN
         Root!.Color = RbColor.Black;
     }
 
-    protected override void OnNodeRemoved(RbNode<TKey, TValue> physicallyRemoveNode, RbNode<TKey, TValue>? replacementNode, RbNode<TKey, TValue>? replacementParent)
+    protected override void OnNodeRemoved( RbNode<TKey, TValue> logicallyRemovedNode, RbNode<TKey, TValue> physicallyRemovedNode, RbNode<TKey, TValue>? replacementNode, RbNode<TKey, TValue>? replacementParent)
     {
-        if (physicallyRemoveNode.Color == RbColor.Black)
+        RbColor originalColorOfRemoved = physicallyRemovedNode.Color;
+        if (logicallyRemovedNode != physicallyRemovedNode)
+        {
+            physicallyRemovedNode.Color = logicallyRemovedNode.Color;
+        }
+
+        if (originalColorOfRemoved == RbColor.Black)
         {
             FixupRemove(replacementNode, replacementParent);
         }
-    }
-
-    protected override void OnNodesSwapped(RbNode<TKey, TValue> oldNode, RbNode<TKey, TValue> newNode)
-    {
-        newNode.Color = oldNode.Color;
     }
 
     private void FixupRemove(RbNode<TKey, TValue>? x, RbNode<TKey, TValue>? xParent)
