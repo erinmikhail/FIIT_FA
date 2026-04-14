@@ -20,7 +20,7 @@ public sealed class BetterBigInteger : IBigInteger
 
     internal static IMultiplier SimpleStrategy { get; } = new SimpleMultiplier();
     internal static IMultiplier KaratsubaStrategy { get; } = new KaratsubaMultiplier();
-    internal static IMultiplier FFTStrategy { get; } = new FFTMultiplier();
+    internal static IMultiplier FFTStrategy { get; } = new FftMultiplier();
 
     /// От массива цифр (little endian)
     public BetterBigInteger(uint[] digits, bool isNegative = false)
@@ -108,7 +108,7 @@ public sealed class BetterBigInteger : IBigInteger
         }
 
         uint[] digits = result.ToArray();
-        
+
         int realLength = digits.Length;
         while (realLength > 0 && digits[realLength - 1] == 0) realLength--;
 
@@ -203,7 +203,7 @@ public sealed class BetterBigInteger : IBigInteger
         else
         {
             int cmp = CompareMagnitudes(a.GetDigits(), b.GetDigits());
-            if (cmp = 0) return BetterBigInteger.Zero;
+            if (cmp == 0) return BetterBigInteger.Zero;
 
             var bigger = cmp > 0 ? a : b;
             var smaller = cmp > 0 ? b : a;
@@ -229,16 +229,47 @@ public sealed class BetterBigInteger : IBigInteger
 
         return new BetterBigInteger([a._smallValue], !a.IsNegative);
     }
-    public static BetterBigInteger operator /(BetterBigInteger a, BetterBigInteger b) => throw new NotImplementedException();
-    public static BetterBigInteger operator %(BetterBigInteger a, BetterBigInteger b) => throw new NotImplementedException();
+    public static BetterBigInteger operator /(BetterBigInteger a, BetterBigInteger b)
+    {
+        return DivRem(a, b).Quotient;
+    }
+    public static BetterBigInteger operator %(BetterBigInteger a, BetterBigInteger b)
+    {
+        return DivRem(a, b).Remainder;
+    }
 
 
 
     public static BetterBigInteger operator *(BetterBigInteger a, BetterBigInteger b)
-       => throw new NotImplementedException("Умножение делегируется стратегии, выбирать необходимо в зависимости от размеров чисел");
+    { 
+        if (a.IsZero || b.IsZero) return BetterBigInteger.Zero;
+        if (a.IsOne) return b;
+        if (b.IsOne) return a;
+
+        int lengthA = a.GetDigits().Length;
+        int lengthB = b.GetDigits().Length;
+        int maxLength = Math.Max(lengthA, lengthB);
+
+        IMultiplier strategy;
+
+        if (maxLength < KARATSUBA_THRESHOLD)
+        {
+            strategy = SimpleStrategy; 
+        }
+        else if (maxLength < FFT_THRESHOLD)
+        {
+            strategy = KaratsubaStrategy; // Для средних чисел O(n^1.58)
+        }
+        else
+        {
+            strategy = FFTStrategy; // Для гигантских чисел O(n log n log log n)
+        }
+
+        return strategy.Multiply(a, b);
+    }
 
     public static BetterBigInteger operator ~(BetterBigInteger a)
-    { 
+    {
         return (-a) - BetterBigInteger.One;
     }
     public static BetterBigInteger operator &(BetterBigInteger a, BetterBigInteger b) => BitwiseOp(a, b, (x, y) => x & y);
@@ -301,10 +332,10 @@ public sealed class BetterBigInteger : IBigInteger
         var oldDigigts = a.GetDigits();
 
         uint[] newDigits = new uint[oldDigigts.Length + blockShift + 1];
-        for (int i = 0; i < oldDigigts.Length; ++i)
+        for (int i = 0; i < oldDigits.Length; ++i)
         {
             uint part1 = oldDigigts[i] << bitShift;
-            uint part2 = bitShift == 0 ? 0 : oldDigigts[i] >> (32 - bitShift);
+            uint part2 = bitShift == 0 ? 0 : oldDigigts[i - 1] >> (32 - bitShift);
             newDigits[i + blockShift] = part1 | part2;
         }
 
@@ -312,7 +343,7 @@ public sealed class BetterBigInteger : IBigInteger
         {
             newDigits[oldDigigts.Length + blockShift] = oldDigigts[^1] >> (32 - bitShift);
         }
-        
+
         return new BetterBigInteger(newDigits, a.IsNegative);
     }
     public static BetterBigInteger operator >>(BetterBigInteger a, int shift)
@@ -369,7 +400,7 @@ public sealed class BetterBigInteger : IBigInteger
 
     public override string ToString() => ToString(10);
     public string ToString(int radix)
-    { 
+    {
         if (radix < 2 || radix > 36) throw new ArgumentOutOfRangeException(nameof(radix));
         if (this.IsZero) return "0";
 
@@ -440,7 +471,7 @@ public sealed class BetterBigInteger : IBigInteger
         result[maxLength] = (uint)carry;
         return result;
     }
-    
+
     private static uint[] SubtractMagnitudes(ReadOnlySpan<uint> a, ReadOnlySpan<uint> b)
     {
         uint[] result = new uint[a.Length];
@@ -467,5 +498,118 @@ public sealed class BetterBigInteger : IBigInteger
         }
 
         return result;
+    }
+    
+    public static (BetterBigInteger Quotient, BetterBigInteger Remainder) DivRem(BetterBigInteger a, BetterBigInteger b)
+    {
+        if (b.IsZero) throw new DivideByZeroException();
+
+        var diff = CompareMagnitudes(a.GetDigits(), b.GetDigits());
+
+        if (diff == -1)
+        {
+            return (BetterBigInteger.Zero, a);
+        }
+
+        if (diff == 0)
+        {
+            bool resultSign = a.IsNegative ^ b.IsNegative;
+            return (new BetterBigInteger([1u], resultSign), BetterBigInteger.Zero);
+        }
+
+        bool quotientNegative = a.IsNegative ^ b.IsNegative;
+        bool remainderNegative = a.IsNegative;
+
+        var (quotDigits, remDigits) = DivRemMagnitudes(a.GetDigits(), b.GetDigits());
+
+        return (new BetterBigInteger(quotDigits, quotientNegative),
+                new BetterBigInteger(remDigits, remainderNegative));
+    }
+
+    private static (uint[] qDigits, uint[] rDigits) DivRemMagnitudes(ReadOnlySpan<uint> a, ReadOnlySpan<uint> b)
+    {
+        uint[] qDigits = new uint[a.Length - b.Length + 1];
+        uint[] rDigits = new uint[b.Length];
+
+        int shift = System.Numerics.BitOperations.LeadingZeroCount(b[^1]);
+
+        uint[] normA = new uint[a.Length + 1];
+
+        if (shift == 0)
+        {
+            b.CopyTo(rDigits);
+            a.CopyTo(normA);
+        }
+        else
+        {
+            for (int i = 0; i < b.Length; ++i)
+            {
+                if (i == 0) rDigits[0] = b[0] << shift;
+                else rDigits[i] = (b[i] << shift) | (b[i - 1] >> (32 - shift));
+            }
+
+            for (int i = 0; i < a.Length; ++i)
+            {
+                if (i == 0) normA[0] = a[0] << shift;
+                else normA[i] = (a[i] << shift) | (a[i - 1] >> (32 - shift));
+            }
+            normA[a.Length] = a[^1] >> (32 - shift);
+        }
+
+        for (int j = qDigits.Length - 1; j >= 0; --j)
+        {
+            var higherBlock = j + b.Length;
+            var lowerBlock = higherBlock - 1;
+
+            ulong qHat;
+            if (normA[j + b.Length] == rDigits[^1]) qHat = 0xFFFFFFFFu;
+            else
+            {
+                ulong dividend = ((ulong)normA[higherBlock] << 32 | normA[lowerBlock]);
+                qHat = dividend / rDigits[^1];
+            }
+
+            qDigits[j] = (uint)qHat;
+            ulong borrow = 0;
+
+            for (int i = 0; i < b.Length; ++i)
+            {
+                ulong temp = (ulong)rDigits[i] * qHat + borrow;
+                long res = (long)normA[j + i] - (uint)temp;
+                normA[j + i] = (uint)res;
+                borrow = (temp >> 32) + (res < 0 ? 1ul : 0ul);
+            }
+
+            bool overshot = normA[j + b.Length] < borrow;
+            normA[j + b.Length] -= (uint)borrow;
+
+            if (overshot)
+            {
+                --qDigits[j];
+                ulong carry = 0;
+                for (int i = 0; i < b.Length; ++i)
+                {
+                    ulong sum = (ulong)normA[j + i] + rDigits[i] + carry;
+                    normA[j + i] = (uint)sum;
+                    carry = sum >> 32;
+                }
+                normA[j + b.Length] += (uint)carry;
+            }
+        }
+
+        if (shift == 0)
+        {
+            normA.AsSpan(0, b.Length).CopyTo(rDigits);
+        }
+        else
+        {
+            for (int i = 0; i < b.Length; ++i)
+            {
+                if (i == b.Length - 1) rDigits[i] = normA[i] >> shift;
+                else rDigits[i] = (normA[i] >> shift) | (normA[i + 1] << (32 - shift));
+            }
+        }
+
+        return (qDigits, rDigits);
     }
 }
