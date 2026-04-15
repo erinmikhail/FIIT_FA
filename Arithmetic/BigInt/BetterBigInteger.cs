@@ -241,7 +241,7 @@ public sealed class BetterBigInteger : IBigInteger
 
 
     public static BetterBigInteger operator *(BetterBigInteger a, BetterBigInteger b)
-    { 
+    {
         if (a.IsZero || b.IsZero) return BetterBigInteger.Zero;
         if (a.IsOne) return b;
         if (b.IsOne) return a;
@@ -254,7 +254,7 @@ public sealed class BetterBigInteger : IBigInteger
 
         if (maxLength < KARATSUBA_THRESHOLD)
         {
-            strategy = SimpleStrategy; 
+            strategy = SimpleStrategy;
         }
         else if (maxLength < FFT_THRESHOLD)
         {
@@ -329,19 +329,19 @@ public sealed class BetterBigInteger : IBigInteger
 
         int blockShift = shift / 32;
         int bitShift = shift % 32;
-        var oldDigigts = a.GetDigits();
+        var oldDigits = a.GetDigits();
 
-        uint[] newDigits = new uint[oldDigigts.Length + blockShift + 1];
+        uint[] newDigits = new uint[oldDigits.Length + blockShift + 1];
         for (int i = 0; i < oldDigits.Length; ++i)
         {
-            uint part1 = oldDigigts[i] << bitShift;
-            uint part2 = bitShift == 0 ? 0 : oldDigigts[i - 1] >> (32 - bitShift);
+            uint part1 = oldDigits[i] << bitShift;
+            uint part2 = (bitShift > 0 && i > 0) ? (oldDigits[i - 1] >> (32 - bitShift)) : 0;
             newDigits[i + blockShift] = part1 | part2;
         }
 
         if (bitShift > 0)
         {
-            newDigits[oldDigigts.Length + blockShift] = oldDigigts[^1] >> (32 - bitShift);
+            newDigits[oldDigits.Length + blockShift] = oldDigits[^1] >> (32 - bitShift);
         }
 
         return new BetterBigInteger(newDigits, a.IsNegative);
@@ -499,7 +499,7 @@ public sealed class BetterBigInteger : IBigInteger
 
         return result;
     }
-    
+
     public static (BetterBigInteger Quotient, BetterBigInteger Remainder) DivRem(BetterBigInteger a, BetterBigInteger b)
     {
         if (b.IsZero) throw new DivideByZeroException();
@@ -611,5 +611,20 @@ public sealed class BetterBigInteger : IBigInteger
         }
 
         return (qDigits, rDigits);
+    }
+
+    internal static uint[] TrimZeros(uint[] arr)
+    {
+        int realLength = arr.Length;
+        while (realLength > 0 && arr[realLength - 1] == 0)
+        {
+            realLength--;
+        }
+
+        if (realLength == arr.Length) { return arr; }
+
+        uint[] trimmed = new uint[realLength];
+        Array.Copy(arr, trimmed, realLength);
+        return trimmed;
     }
 }
