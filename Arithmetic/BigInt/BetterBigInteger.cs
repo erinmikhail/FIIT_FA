@@ -452,7 +452,7 @@ public sealed class BetterBigInteger : IBigInteger
         return 0;
     }
 
-    private static uint[] AddMagnitudes(ReadOnlySpan<uint> a, ReadOnlySpan<uint> b)
+    internal static uint[] AddMagnitudes(ReadOnlySpan<uint> a, ReadOnlySpan<uint> b)
     {
         int maxLength = Math.Max(a.Length, b.Length);
         uint[] result = new uint[maxLength + 1];
@@ -472,7 +472,7 @@ public sealed class BetterBigInteger : IBigInteger
         return result;
     }
 
-    private static uint[] SubtractMagnitudes(ReadOnlySpan<uint> a, ReadOnlySpan<uint> b)
+    internal static uint[] SubtractMagnitudes(ReadOnlySpan<uint> a, ReadOnlySpan<uint> b)
     {
         uint[] result = new uint[a.Length];
         long borrow = 0;

@@ -7,31 +7,32 @@ internal class SimpleMultiplier : IMultiplier
 {
     public BetterBigInteger Multiply(BetterBigInteger a, BetterBigInteger b)
     {
-        var aDigits = a.GetDigits();
-        var bDigits = b.GetDigits();
+        uint[] result = MultiplyMagnitudes(a.GetDigits(), b.GetDigits());
+        bool isNegative = a.IsNegative != b.IsNegative;
+        return new BetterBigInteger(result, isNegative);
+    }
 
-        uint[] result = new uint[aDigigts.Length + bDigits.Length];
+    internal static uint[] MultiplyMagnitudes(ReadOnlySpan<uint> a, ReadOnlySpan<uint> b)
+    {
+        uint[] result = new uint[a.Length + b.Length];
 
-        for (int i = 0; i < aDigits.Length; i++)
+        for (int i = 0; i < a.Length; i++)
         {
-            ulong carry = 0; // в старш разр перен
-            ulong valA = aDigits[i];
+            ulong carry = 0;
+            ulong valA = a[i];
 
-            for (int j = 0; j < bDigits.Length; j++)
+            for (int j = 0; j < b.Length; j++)
             {
-                ulong valB = bDigits[j];
-                ulong current = result[i + j] + (valA * valB) + carry;
+                ulong current = result[i + j] + (valA * b[j]) + carry;
                 result[i + j] = (uint)current;
                 carry = current >> 32;
             }
 
             if (carry > 0)
             {
-                result[i + bDigits.Length] = (uint)carry;
+                result[i + b.Length] = (uint)carry;
             }
         }
-
-        bool isNegative = a.IsNegative() != b.IsNegative();
-        return new BetterBigInteger(result, isNegative);
+        return result;
     }
 }
